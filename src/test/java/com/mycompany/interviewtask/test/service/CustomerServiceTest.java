@@ -63,4 +63,19 @@ public class CustomerServiceTest {
         Assertions.assertEquals(1015, savedInDatabase.get(2).getRating());
         Assertions.assertEquals("+8-123-456-78-90", savedInDatabase.get(2).getPhoneNumber());
     }
+
+    @Test
+    void createCustomersShouldRollbackTransactionWhenIOExceptionIsThrown() {
+        try (MockedStatic<CommonUtils> commonUtilsMock = Mockito.mockStatic(CommonUtils.class)) {
+            commonUtilsMock.when(() -> CommonUtils.writeStringToOutputStream(any()))
+                    .thenThrow(IOException.class);
+
+            Assertions.assertThrows(IOException.class,
+                    () -> customerService.create(
+                            List.of(TestUtils.getCustomerDto(10, 5, ClientStatus.PLATINUM, "+7-123-456-78-90"))
+                    )
+            );
+            Assertions.assertTrue(customerRepository.findAll().isEmpty());
+        }
+    }
 }
