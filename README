@@ -15,4 +15,5 @@
 - Lombok;
 - Mapstruct;
 - Liquibase;
-- Mockito.
+- Mockito
+- Gradle.
