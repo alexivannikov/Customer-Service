@@ -22,7 +22,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CommonMapper mapper;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = IOException.class)
     public byte[] create(List<CustomerDto> customerDtoList) throws IOException {
         var phoneNumbers = customerRepository.saveAll(mapper.fromDtoList(customerDtoList)).stream()
                 .map(Customer::getPhoneNumber)
